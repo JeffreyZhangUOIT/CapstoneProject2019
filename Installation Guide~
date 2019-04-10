@@ -1,0 +1,91 @@
+This is the installation guide for compiling a simulation of an scaled 8x8 electric vehicle.
+Written by: Jeffrey Zhang
+
+Before you begin: 
+- You require at least 2GB memory to compile the files.
+- You need more then 10 GB of hard drive space.
+
+1. Install ubuntu 14.04
+
+2. Install ros indigo without gazebo
+sudo sh -c 'echo "deb http://packages.ros.org/ros/ubuntu $(lsb_release -sc) main" > /etc/apt/sources.list.d/ros-latest.list'
+sudo apt-key adv --keyserver hkp://ha.pool.sks-keyservers.net:80 --recv-key 421C365BD9FF1F717815A3895523BAEEB01FA116
+sudo apt-get update && sudo apt-get install dpkg
+sudo apt-get install ros-indigo-desktop
+sudo rosdep init
+rosdep update
+echo "source /opt/ros/indigo/setup.bash" >> ~/.bashrc
+sudo apt-get install python-rosinstall
+
+3. Create catkin workspace
+Example procedure that creates workspace at the root of the user's home folder.
+NOTE: The rest of this guide assumes you put your catkin_ws folder in your home folder.
+mkdir -p ~/catkin_ws/src
+cd ~/catkin_ws
+catkin_make
+
+4. Drop our files into your catkin_ws/src folder
+cd ~/catkin_ws/src
+
+5. Install navigation stack
+sudo apt-get install ros-indigo-navigation
+
+6. Install teb planner
+sudo apt-get install ros-indigo-teb-local-planner
+
+7. Install gazebo_ros_controllers and packages
+sudo apt-get install ros-indigo-gazebo-ros-pkgs
+sudo apt-get install ros-indigo-ros-control ros-indigo-ros-controllers
+
+
+8. Source catkin and ros to bash
+echo "source /opt/ros/indigo/setup.bash" >> ~/.bashrc
+echo "source ~/catkin_ws/devel/setup.bash" >> ~/.bashrc
+source ~/.bashrc
+
+9. Compile our files
+cd ~/catkin_ws
+catkin_make
+
+10. Run
+roslaunch bot_description all.launch
+roslaunch bot_description gazebo.launch
+roslaunch bot_description rviz.launch
+roslaunch bot_2dnav amcl_demo.launch
+
+*TROUBLESHOOTING*
+For most build errors:
+sudo apt-get install python-rosdep
+sudo rosdep init
+rosdep update
+rosdep install --from-paths src --ignore-src -r -y
+
+Generating *.cfg failed, permission denied:
+This one is an error that comes from extracting the gazebo_ros_control_pkg files from an archive. You need to add executable permissions for the .cfg files.
+Example "exec: /home/ayumu/catkin_ws/src/gazebo_ros_pkgs/gazebo_ros/cfg/Physics.cfg: Permission denied" Error is resolved with:
+sudo chmod +x /home/ayumu/catkin_ws/src/gazebo_ros_pkgs/gazebo_ros/cfg/Physics.cfg
+Alternative: Clone the gazebo ros packages again.
+Delete your current gazebo_ros_pkgs folder.
+cd ~/catkin_ws/src
+git clone https://github.com/ros-simulation/gazebo_ros_pkgs.git -b indigo-devel
+
+
+Installing Gazebo 7
+sudo sh -c 'echo "deb http://packages.osrfoundation.org/gazebo/ubuntu-stable `lsb_release -cs` main" > /etc/apt/sources.list.d/gazebo-stable.list'
+wget http://packages.osrfoundation.org/gazebo.key -O - | sudo apt-key add -
+sudo apt-get update
+sudo apt-get install ros-indigo-gazebo7-ros-pkgs
+sudo apt-get install ros-indigo-gazebo7-ros-control
+
+
+git clone https://github.com/ros-simulation/gazebo_ros_pkgs.git -b kinetic-devel
+rosdep update
+rosdep check --from-paths . --ignore-src --rosdistro indigo
+rosdep install --from-paths . --ignore-src --rosdistro indigo -y
+
+
+echo "export SVGA_VGPU10=0" >> ~/.bashrc
+
+
+
+
