@@ -15,6 +15,7 @@ sudo apt-get install ros-indigo-desktop
 sudo rosdep init
 rosdep update
 echo "source /opt/ros/indigo/setup.bash" >> ~/.bashrc
+source ~/.bashrc
 sudo apt-get install python-rosinstall
 
 Installing Gazebo 7
@@ -42,8 +43,7 @@ sudo apt-get install ros-indigo-navigation
 6. Install teb planner
 sudo apt-get install ros-indigo-teb-local-planner
 
-8. Source catkin and ros to bash
-echo "source /opt/ros/indigo/setup.bash" >> ~/.bashrc
+8. Source catkin devel to bash
 echo "source ~/catkin_ws/devel/setup.bash" >> ~/.bashrc
 source ~/.bashrc
 
