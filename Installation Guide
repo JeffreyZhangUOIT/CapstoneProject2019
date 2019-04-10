@@ -1,4 +1,4 @@
-This is the installation guide for compiling a simulation of an scaled 8x8 electric vehicle.
+This is the installation guide for compiling a simulation of a scaled 8x8 electric vehicle.
 Written by: Jeffrey Zhang
 
 Before you begin: 
@@ -7,7 +7,7 @@ Before you begin:
 
 1. Install ubuntu 14.04 and git
 
-2. Install ros indigo without gazebo
+2. Install ros indigo, and then gazebo 7.
 sudo sh -c 'echo "deb http://packages.ros.org/ros/ubuntu $(lsb_release -sc) main" > /etc/apt/sources.list.d/ros-latest.list'
 sudo apt-key adv --keyserver hkp://ha.pool.sks-keyservers.net:80 --recv-key 421C365BD9FF1F717815A3895523BAEEB01FA116
 sudo apt-get update && sudo apt-get install dpkg
@@ -17,7 +17,7 @@ rosdep update
 echo "source /opt/ros/indigo/setup.bash" >> ~/.bashrc
 sudo apt-get install python-rosinstall
 
-Install Gazebo 7
+Installing Gazebo 7
 sudo sh -c 'echo "deb http://packages.osrfoundation.org/gazebo/ubuntu-stable `lsb_release -cs` main" > /etc/apt/sources.list.d/gazebo-stable.list'
 wget http://packages.osrfoundation.org/gazebo.key -O - | sudo apt-key add -
 sudo apt-get update
@@ -34,6 +34,7 @@ catkin_make
 4. Drop our files into your catkin_ws/src folder
 cd ~/catkin_ws/src
 git clone https://github.com/JeffreyZhangUOIT/CapstoneProject2019.git
+See the troubleshooting section below on how to get the contents of the ros_controllers and gazebo_ros_pkgs folders.
 
 5. Install navigation stack
 sudo apt-get install ros-indigo-navigation
@@ -59,31 +60,30 @@ roslaunch bot_description rviz.launch
 roslaunch bot_2dnav amcl_demo.launch
 
 *TROUBLESHOOTING*
-For most build errors:
+Github does not like large directories, so you will have to extract the contents of the
+ros_controllers folder and gazebo_ros_pkgs folder yourself from the provided 
+CapstoneProject2019.tar.gz archive.
+
+* For most build errors *
 sudo apt-get install python-rosdep
 sudo rosdep init
 rosdep update
 rosdep install --from-paths src --ignore-src -r -y
 
-Generating *.cfg failed, permission denied:
+* Generating *.cfg failed, permission denied erros *
 This one is an error that comes from extracting the gazebo_ros_control_pkg files from an archive. You need to add executable permissions for the .cfg files.
-Example "exec: /home/ayumu/catkin_ws/src/gazebo_ros_pkgs/gazebo_ros/cfg/Physics.cfg: Permission denied" Error is resolved with:
-sudo chmod +x /home/ayumu/catkin_ws/src/gazebo_ros_pkgs/gazebo_ros/cfg/Physics.cfg
-Alternative: Clone the gazebo ros packages again.
+You can try to clone the repository yourself first:
 Delete your current gazebo_ros_pkgs folder.
 cd ~/catkin_ws/src
 git clone https://github.com/ros-simulation/gazebo_ros_pkgs.git -b indigo-devel
 
-Using rosdep, you can install any dependancies that you may need for any catkin package.
-git clone https://github.com/ros-simulation/gazebo_ros_pkgs.git -b kinetic-devel
-rosdep update
-rosdep check --from-paths . --ignore-src --rosdistro indigo
-rosdep install --from-paths . --ignore-src --rosdistro indigo -y
 
+Alternative: Manually make the permission edits
+Example "exec: /home/ayumu/catkin_ws/src/gazebo_ros_pkgs/gazebo_ros/cfg/Physics.cfg: Permission denied" Error is resolved with:
+sudo chmod +x /home/ayumu/catkin_ws/src/gazebo_ros_pkgs/gazebo_ros/cfg/Physics.cfg
+
+
+* IF YOU ARE USING A VIRTUAL MACHINE*
 Use this line of code if you are running ubuntu in a virtual machine. Ignore if otherwise. Virtual machines have terrible OpenGL support.
 echo "export SVGA_VGPU10=0" >> ~/.bashrc
 source ~/.bashrc
-
-
-
-
